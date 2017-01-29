@@ -2,7 +2,7 @@
 #include <LCD.h>
 #include <SPI.h>
 #include <XPT2046.h>
-#include <Touch.h>
+#include "Touch.h"
 int globx, globy;
 int bx[8]={0,120,0,120,0,120,0,120};
 int by[8]={161,161,201,201,241,241,281,281};
