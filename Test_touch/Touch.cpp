@@ -369,8 +369,7 @@ int TP::tp_is_button()
 					poga=( ( (s_tTouch.hwYpos / 40) -3) + ((s_tTouch.hwYpos / 40) -4));		
 					if (poga>0)
 					{
-						Serial.print("Poga: ");
-						Serial.println(poga);
+						
 						return poga;
 					}
 					
@@ -380,8 +379,7 @@ int TP::tp_is_button()
 					poga=( ( (s_tTouch.hwYpos / 40) -3) + ((s_tTouch.hwYpos / 40) -4))+1;
 					if (poga>0)
 					{
-						Serial.print("Poga: ");
-						Serial.println(poga);
+						
 						return poga;
 					}
 				}

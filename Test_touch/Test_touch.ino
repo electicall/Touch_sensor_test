@@ -3,11 +3,9 @@
 #include <SPI.h>
 #include <XPT2046.h>
 #include "Touch.h"
-int globx, globy;
-int bx[8]={0,120,0,120,0,120,0,120};
-int by[8]={161,161,201,201,241,241,281,281};
-char butontext[]="12345678901234";
 int temp_pan;
+int last_state=0;
+int current_state;
 void setup()
 { 
    __SD_CS_DISABLE();
@@ -21,45 +19,59 @@ void setup()
     Tp.tp_init();
     Tp.tp_adjust_def();
     Tft.lcd_clear_screen(BLACK);
-    Tft.lcd_display_string(20, 20, (const uint8_t *)"Test On", FONT_1608, YELLOW);
+    Tft.lcd_display_string(88, 20, (const uint8_t *)"<- Pianos ->", FONT_1608, YELLOW);
+    Tft.lcd_display_string(68, 40, (const uint8_t *)"<- Grand Piano ->", FONT_1608, YELLOW);
+    //Tft.lcd_display_string(0,70,"A B C D A B C D",FONT_1608,YELLOW);
+    //Tft.lcd_display_string(0,90,"D E F G D E F G",FONT_1608,YELLOW);
+    //Tft.lcd_display_string(0,110,"G A B C G A B C",FONT_1608,YELLOW);
+    //Tft.lcd_display_string(0,130,"C D E F C D E F ",FONT_1608,YELLOW);
+    // Tft.lcd_display_string(68, 40, (const uint8_t *)"<- Grand Piano ->", FONT_1608, BLACK);
     Tft.lcd_draw_rect(0,0,239,159,YELLOW); // galvenais info logs
-  
-    Tp.tp_draw_button(1,2,"UP", GREEN);
-    Tp.tp_draw_button(2,4,"DOWN", GREEN);
-    Tp.tp_draw_button(3,5,"LEFT", GREEN);
-    Tp.tp_draw_button(4,5,"RIGHT", GREEN);
-    Tp.tp_draw_button(5,2,"OK", WHITE);
-    Tp.tp_draw_button(6,6,"CANCEL", RED);
-    Tp.tp_draw_button(7,4,"MENU", YELLOW);
-    Tp.tp_draw_button(8,4,"EXIT", YELLOW);
+    draw_layout(0);
+    Tp.tp_draw_button(1,7,"BANK UP", GREEN);
+    Tp.tp_draw_button(2,9,"INSTR. UP", GBLUE);
+    Tp.tp_draw_button(3,9,"BANK DOWN", GREEN);
+    Tp.tp_draw_button(4,11,"INSTR. DOWN", GBLUE);
+    Tp.tp_draw_button(5,9,"VOLUME UP", WHITE);
+    Tp.tp_draw_button(6,4,"MENU", YELLOW);
+    Tp.tp_draw_button(7,11,"VOLUME DOWN", WHITE);
+    //Tp.tp_draw_button(8,1," ", YELLOW);
+   
+    
+    temp_pan=0;
     
    }
 
 
 void loop()
 {
-    //Tp.tp_draw_board();
-    //globx=Tp.tp_get_x();
-   // globy=Tp.tp_get_y();
-    //Serial.write(12);
-    //Serial.print((int)globx);
-    //Serial.println();
-//    while(temp_pan ==0){
-//    temp_pan=Tp.tp_is_button();
-//    }
-//    if (temp_pan>0){    
-//    Serial.print("Button nr: ");
-//    Serial.print(temp_pan);
-//    Serial.print(" pressed");
-//    Serial.println();}
-//    while(temp_pan !=0) {
-//      temp_pan=Tp.tp_is_button();
-//    }
-//    Serial.println("Button released");
     temp_pan=Tp.tp_is_button();
-    Serial.print("Button: ");
-    Serial.print(temp_pan);
-    Serial.println();
+    if (temp_pan !=0) 
+      {
+          current_state=temp_pan;
+          if (current_state != last_state)
+          {
+          last_state=current_state;  
+         //poga nospiesta, trigeris. 
+          }
+      }
+
    
+}
+
+void draw_layout(int transpose) 
+{
+  int z;
+  for (int x=35;x<195;x=x+20)
+    {
+      for (int y=70;y<150;y=y+20)
+        {
+          if (x>95) {z=x+10;}
+          else z=x;
+          Tft.lcd_draw_rect(z,y,20,20,WHITE);
+          Tft.lcd_display_string(z+2,y+2,"C#", FONT_1608,YELLOW);
+       
+        }
+    }
 }
 
