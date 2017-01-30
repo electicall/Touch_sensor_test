@@ -19,15 +19,9 @@ void setup()
     Tp.tp_init();
     Tp.tp_adjust_def();
     Tft.lcd_clear_screen(BLACK);
-    Tft.lcd_display_string(88, 20, (const uint8_t *)"<- Pianos ->", FONT_1608, YELLOW);
-    Tft.lcd_display_string(68, 40, (const uint8_t *)"<- Grand Piano ->", FONT_1608, YELLOW);
-    //Tft.lcd_display_string(0,70,"A B C D A B C D",FONT_1608,YELLOW);
-    //Tft.lcd_display_string(0,90,"D E F G D E F G",FONT_1608,YELLOW);
-    //Tft.lcd_display_string(0,110,"G A B C G A B C",FONT_1608,YELLOW);
-    //Tft.lcd_display_string(0,130,"C D E F C D E F ",FONT_1608,YELLOW);
-    // Tft.lcd_display_string(68, 40, (const uint8_t *)"<- Grand Piano ->", FONT_1608, BLACK);
     Tft.lcd_draw_rect(0,0,239,159,YELLOW); // galvenais info logs
     draw_layout(0);
+    draw_instruments(0);
     Tp.tp_draw_button(1,7,"BANK UP", GREEN);
     Tp.tp_draw_button(2,9,"INSTR. UP", GBLUE);
     Tp.tp_draw_button(3,9,"BANK DOWN", GREEN);
@@ -62,16 +56,26 @@ void loop()
 void draw_layout(int transpose) 
 {
   int z;
-  for (int x=35;x<195;x=x+20)
-    {
-      for (int y=70;y<150;y=y+20)
+  for (int y=70;y<150;y=y+20)
+      {
+      Tft.lcd_display_string(10,y+5,"Instrument", FONT_1206,YELLOW);
+      Tft.lcd_display_string(2,y+5,"+", FONT_1206,YELLOW);
+      for (int x=75;x<235;x=x+20)
         {
-          if (x>95) {z=x+10;}
+          if (x>135) {z=x+2;}
           else z=x;
           Tft.lcd_draw_rect(z,y,20,20,WHITE);
           Tft.lcd_display_string(z+2,y+2,"C#", FONT_1608,YELLOW);
        
         }
     }
+}
+
+void draw_instruments(int instrument)
+{
+    Tft.lcd_display_string(2, 2, (const uint8_t *)"v1.1  BANK:", FONT_1608, YELLOW);
+    Tft.lcd_display_string(2, 22, (const uint8_t *)"INSTRUMENT:", FONT_1608, YELLOW);
+    Tft.lcd_display_string(96, 2, (const uint8_t *)"Pianos", FONT_1608, YELLOW);
+    Tft.lcd_display_string(96, 22, (const uint8_t *)"1234567890123456", FONT_1608, YELLOW);  
 }
 
