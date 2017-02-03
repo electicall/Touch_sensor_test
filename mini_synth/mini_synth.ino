@@ -8,6 +8,7 @@
 #include <SPI.h>
 #include <XPT2046.h>
 #include "Touch.h"
+#include <String.h>
 
 Fluxamasynth synth = Fluxamasynth();
 //pogu matricas
@@ -36,6 +37,9 @@ bool drumm=false;
       s49,s50,s51,s52,s53,s54,s55,s56,s57,s58,s59,s60,s61,s62,s63,s64,s65,s66,s67,s68,s69,s70,s71,s72,s73,s74,s75,s76,
       s77,s78,s79,s80,s81,s82,s83,s84,s85,s86,s87,s88,s89,s90,s91,s92,s93,s94,s95,s96,s97,s98,s99,s100,s101,s102,s103,
       s104,s105,s106,s107,s108,s109,s110,s111,s112,s113,s114,s115,s116,s117,s118,s119,s120,s121,s122,s123,s124,s125,s126,s127};
+
+//notis nosaukumi
+String notis[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
 
 //notis C4
 int notes[32]={41,40,38,36,48,47,45,43,55,53,52,50,62,60,59,57,65,64,62,60,72,71,69,67,79,77,76,74,86,84,83,81};

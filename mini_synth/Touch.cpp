@@ -1,5 +1,5 @@
 
-#include <Touch.h>
+#include "Touch.h"
 #include <LCD.h>
 #include <XPT2046.h>
 #include <stdlib.h>
@@ -369,8 +369,6 @@ int TP::tp_is_button()
 					poga=( ( (s_tTouch.hwYpos / 40) -3) + ((s_tTouch.hwYpos / 40) -4));		
 					if (poga>0)
 					{
-						Serial.print("Poga: ");
-						Serial.println(poga);
 						return poga;
 					}
 					
@@ -380,8 +378,6 @@ int TP::tp_is_button()
 					poga=( ( (s_tTouch.hwYpos / 40) -3) + ((s_tTouch.hwYpos / 40) -4))+1;
 					if (poga>0)
 					{
-						Serial.print("Poga: ");
-						Serial.println(poga);
 						return poga;
 					}
 				}
