@@ -194,3 +194,17 @@ const char  d43 []  PROGMEM = "Mute Cuíca";
 const char  d44 []  PROGMEM = "Open Cuíca";
 const char  d45 []  PROGMEM = "Mute Triangle";
 const char  d46 []  PROGMEM = "Open Triangle";
+// note names
+
+const char n0 [] PROGMEM ="C";
+const char n1 [] PROGMEM ="C#";
+const char n2 [] PROGMEM ="D";
+const char n3 [] PROGMEM ="D#";
+const char n4 [] PROGMEM ="E";
+const char n5 [] PROGMEM ="F";
+const char n6 [] PROGMEM ="F#";
+const char n7 [] PROGMEM ="G";
+const char n8 [] PROGMEM ="G#";
+const char n9 [] PROGMEM ="A";
+const char n10 [] PROGMEM ="A#";
+const char n11 [] PROGMEM ="B";
