@@ -348,8 +348,8 @@ int by[8]={161,161,201,201,241,241,281,281};
 
 	Tft.lcd_draw_rect(bx[count-1],by[count-1],118,38,color); //poga nr1
     int temp_pan=(118-(lenght*8))/2;
-    Serial.println(temp_pan);
-    Serial.println(lenght);
+    // Serial.println(temp_pan);
+    // Serial.println(lenght);
     Tft.lcd_display_string(bx[count-1]+temp_pan,by[count-1]+11,text,FONT_1608,color);
 
 }

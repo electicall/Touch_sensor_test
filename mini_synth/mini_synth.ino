@@ -23,6 +23,8 @@ Adafruit_TrellisSet trellis =  Adafruit_TrellisSet(&matrix0, &matrix1);
 #define NUMTRELLIS 2
 #define numKeys (NUMTRELLIS * 16)
 #define INTPIN A2
+int transpose_mod=0;
+
 
 int button_matrix[8]={4,3,2,1,20,19,18,17};
 //katra nākamā rinda ir +4
@@ -52,6 +54,7 @@ int notes2[32]={57,59,60,62,81,83,84,86,50,52,53,55,74,76,77,79,43,45,47,48,67,6
 int drums[16]={46,42,38,35,39,44,40,36,50,48,47,41,55,53,51,49};
 bool drum=false;
 int lastprog=0;
+int lastlastprog=0;
 int temp_pan=0;
 //pogu staavoklji
 int last_state=0;
@@ -94,55 +97,57 @@ Tp.tp_adjust_def(); //autokalibracija
 //galvenais izkartojums
 Tft.lcd_clear_screen(BLACK); 
 Tft.lcd_draw_rect(0,0,239,159,YELLOW); // galvenais info logs
-Tft.lcd_display_string(2, 2, (const uint8_t *)"v1.1  BANK:", FONT_1608, YELLOW);
+Tft.lcd_display_string(2, 2, (const uint8_t *) "v1.1  BANK:", FONT_1608, YELLOW);
 Tft.lcd_display_string(2, 22, (const uint8_t *)"INSTRUMENT:", FONT_1608, YELLOW);
-draw_layout(0); //ziiimee nosu izkartojumu
+Tft.lcd_display_string(2, 42, (const uint8_t *)"PLAY MODE:", FONT_1608,YELLOW);
+
+draw_layout(); //ziiimee nosu izkartojumu
 //draw_instruments(0);//ziimee instrumentus, attieciigi atbilstoshi bankai.
 //pamatpogu ziimeeshana
 Tp.tp_draw_button(1,7,"BANK UP", GREEN);
 Tp.tp_draw_button(2,9,"INSTR. UP", GBLUE);
 Tp.tp_draw_button(3,9,"BANK DOWN", GREEN);
 Tp.tp_draw_button(4,11,"INSTR. DOWN", GBLUE);
-Tp.tp_draw_button(5,9,"VOLUME UP", WHITE);
-Tp.tp_draw_button(6,4,"MENU", YELLOW);
-Tp.tp_draw_button(7,11,"VOLUME DOWN", WHITE);
-//Tp.tp_draw_button(8,1," ", YELLOW);
+Tp.tp_draw_button(5,11,"TRANSPOSE +", WHITE);
+Tp.tp_draw_button(8,4,"MENU", YELLOW);
+Tp.tp_draw_button(7,11,"TRANSPOSE -", WHITE);
+Tp.tp_draw_button(6,12,"DRUM MACHINE", GREEN);
 DrawIn();
-
+Draw_drum_status();
 
 //inicializācijas pogu vizualizacijas cikli
-for (int i=0;i<20;i++)
-  {
-    for (int j=0;j<4;j++)
-      {
-        if (i<=16)
-          {
-            trellis.setLED((button_matrix[i/2]+j*4)-1);
-            trellis.writeDisplay();
-          }
-        else
-          {
-            if (j%2==0) 
-              {
-                digitalWrite(3,HIGH);
-              }
-            else 
-              {
-                digitalWrite(3,LOW);
-              }
-          }
-      delay(20);
-      }
-    }
+// for (int i=0;i<20;i++)
+//   {
+//     for (int j=0;j<4;j++)
+//       {
+//         if (i<=16)
+//           {
+//             trellis.setLED((button_matrix[i/2]+j*4)-1);
+//             trellis.writeDisplay();
+//           }
+//         else
+//           {
+//             if (j%2==0) 
+//               {
+//                 digitalWrite(3,HIGH);
+//               }
+//             else 
+//               {
+//                 digitalWrite(3,LOW);
+//               }
+//           }
+//       delay(20);
+//       }
+//     }
 
  
-for (uint8_t i=0; i<numKeys/2; i++) 
-  {
-    trellis.clrLED(i);
-    trellis.clrLED(i+16);
-    trellis.writeDisplay();
-    delay(40);
-  }
+// for (uint8_t i=0; i<numKeys/2; i++) 
+//   {
+//     trellis.clrLED(i);
+//     trellis.clrLED(i+16);
+//     trellis.writeDisplay();
+//     delay(40);
+//   }
     
    }
 
@@ -163,45 +168,51 @@ if (trellis.readSwitches())
         if (current_state != last_state)
           {
             last_state=current_state;  
-            changeprog(last_state); 
+            Menu_button_processing(last_state); 
           }
       }
     else last_state=0;
 
 }
 
-void draw_layout(int transpose) 
+void clear_layout(){
+  Tft.lcd_fill_rect(75,70,159,80,BLACK);
+}
+void draw_layout() 
 {
+
   int zzx=0;
-  int z;
+  int zz;
+  int trans=0;
   
-  for (int y=70;y<150;y=y+20)
+  for (int yy=70;yy<150;yy=yy+20)
       {
-      Tft.lcd_display_string(10,y+5,"Instrument", FONT_1206,YELLOW);
-      Tft.lcd_display_string(2,y+5,"+", FONT_1206,YELLOW);
-      for (int x=75;x<235;x=x+20)
+      Tft.lcd_display_string(10,yy+5,"Instrument", FONT_1206,YELLOW);
+      Tft.lcd_display_string(2,yy+5,"+", FONT_1206,YELLOW);
+      for (int xx=75;xx<235;xx=xx+20)
         {
-          if (x>135) {z=x+2;}
-          else z=x;
-          Tft.lcd_draw_rect(z,y,20,20,WHITE);
-          char * ptr = (char *) pgm_read_word (&note_table [(notes2[zzx]+3)%12]);
-          char buffer [2]; // must be large enough!
-          strcpy_P (buffer, ptr);
-          Tft.lcd_display_string(z+2,y+2,(const uint8_t *)buffer, FONT_1608,YELLOW);
+          
+
+          if (xx>135) {zz=xx+2;}
+          else zz=xx;
+          Tft.lcd_draw_rect(zz,yy,20,20,WHITE);
+          trans=((notes2[zzx]+transpose_mod )%12);
+          char * ptrx = (char *) pgm_read_word (&note_table [trans]);
+          char bufferx [2]; // must be large enough!
+          strcpy_P (bufferx, ptrx);
+          Tft.lcd_display_string(zz+2,yy+2,(const uint8_t *)bufferx, FONT_1608,YELLOW);
+          Serial.print("draw_layout");
+          Serial.print(zzx);
+          Serial.print(" : ");
+          Serial.println(lastprog);
           zzx++;
        
         }
     }
 }
 
-void draw_instruments(int instrument)
-{
-   
-    Tft.lcd_display_string(96, 2, (const uint8_t *)"Pianos", FONT_1608, YELLOW);
-    Tft.lcd_display_string(96, 22, (const uint8_t *)"1234567890123456", FONT_1608, YELLOW);  
-}
 
-void changeprog(int value){
+void Menu_button_processing(int value){
 // value 0 - instruemnt -- , value 1 - instrument ++ , value 2 - bank -- , value 3 - bank ++
       if (value==2 and lastprog<127){
           lastprog++;
@@ -223,6 +234,20 @@ void changeprog(int value){
           DrawIn();
           synth.programChange(0, 1, lastprog);
       }
+      else if (value==5 and transpose_mod < 12){
+          transpose_mod++;
+         clear_layout();
+          draw_layout();
+      }
+      else if (value==7 and transpose_mod > -12){
+          transpose_mod--;
+          clear_layout();
+          draw_layout();
+      }
+      else if (value==6){
+          drumm=!drumm;
+          Draw_drum_status();
+          }
 }
 void check_buttons(){
   for (uint8_t i=0; i<numKeys; i++) 
@@ -232,7 +257,9 @@ void check_buttons(){
               trellis.setLED(i);
               if (drumm!=true) 
                 {
-                  synth.noteOn(1, notes[i]-12, 127);
+                  synth.noteOn(1, notes[i]-12+transpose_mod, 127);
+                  Serial.print("Lastprog: ");
+                  Serial.println(lastprog);
                 }
               else 
                 {
@@ -242,22 +269,48 @@ void check_buttons(){
           if (trellis.justReleased(i)) 
             {
               trellis.clrLED(i);
-              synth.noteOff(1, notes[i]-12);
+              synth.noteOff(1, notes[i]-12+transpose_mod);
             }
           }
   trellis.writeDisplay();
 }
 
 void DrawIn(){
-      Tft.lcd_fill_rect(96,1,143,40,BLACK);
-//ieraksta instrumentu  
-      char * ptr = (char *) pgm_read_word (&instr_table [lastprog]);
-      char buffer [18]; // must be large enough!
+
+//ieraksta instrumentu  dzēš
+      char * ptr = (char *) pgm_read_word (&instr_table [lastlastprog]);
+      char buffer [18]; 
+      strcpy_P (buffer, ptr); 
+      Tft.lcd_display_string(96, 22, (const uint8_t *)buffer, FONT_1608, BLACK);
+//ieraksta banku dzēš
+      ptr = (char *) pgm_read_word (&bank_table [lastlastprog/8]);
       strcpy_P (buffer, ptr);
-      Tft.lcd_display_string(96, 22, (const uint8_t *)buffer, FONT_1608, YELLOW);
+      Tft.lcd_display_string(96, 2, (const uint8_t *)buffer, FONT_1608, BLACK);
+
+
+//ieraksta instrumentu  
+      ptr = (char *) pgm_read_word (&instr_table [lastprog]);
+      strcpy_P (buffer, ptr); 
+      Tft.lcd_display_string(96, 22, (const uint8_t *)buffer, FONT_1608, WHITE);
 //ieraksta banku      
       ptr = (char *) pgm_read_word (&bank_table [lastprog/8]);
       strcpy_P (buffer, ptr);
-      Tft.lcd_display_string(96, 2, (const uint8_t *)buffer, FONT_1608, YELLOW);
+      Tft.lcd_display_string(96, 2, (const uint8_t *)buffer, FONT_1608, WHITE);
+      lastlastprog=lastprog;
+}
+
+void Draw_drum_status(){
+  if (drumm) 
+    {
+      Tft.lcd_display_string(96,42,(const uint8_t *)"Melody",FONT_1608,BLACK);
+      Tft.lcd_display_string(96,42,(const uint8_t *)"Drums",FONT_1608,CYAN);
+    }
+  else 
+    {
+      Tft.lcd_display_string(96,42,(const uint8_t *)"Drums",FONT_1608,BLACK);
+      Tft.lcd_display_string(96,42,(const uint8_t *)"Melody",FONT_1608,CYAN);
+    } 
+
+    
 }
 
