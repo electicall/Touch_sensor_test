@@ -1,7 +1,7 @@
 
 #include "Touch.h"
-#include <LCD.h>
-#include <XPT2046.h>
+#include "HX8347D.h"
+#include "XPT2046.h"
 #include <stdlib.h>
 #include <math.h>
 //#include <Serial.h>
@@ -152,12 +152,12 @@ void TP::tp_adjust(void)
 					fac=(float)d1/d2;
 					if(fac<0.95||fac>1.05||d1==0||d2==0) {
 						cnt=0;
-						Serial.print(d1, DEC);
-						Serial.print("\t"); 
-						Serial.print(d2, DEC);
-						Serial.print("\t"); 
-						Serial.println(fac, 2);
- 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??ï¿½ï¿½o?ï¿½ï¿½oy?Y   
+						//Serial.print(d1, DEC);
+						//Serial.print("\t"); 
+						//Serial.print(d2, DEC);
+						//Serial.print("\t"); 
+						//Serial.println(fac, 2);
+ 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??¡§o?¡§oy?Y   
 						delay(1000);
 						Tft.lcd_fill_rect(96, 240, 24, 16, WHITE);
 						tp_draw_touch_point(LCD_WIDTH - 20, LCD_HEIGHT - 20, WHITE);
@@ -181,12 +181,12 @@ void TP::tp_adjust(void)
 					fac=(float)d1/d2;
 					if(fac<0.95||fac>1.05) {
 						cnt=0;
-						Serial.print(d1, DEC);
-						Serial.print("\t"); 
-						Serial.print(d2, DEC);
-						Serial.print("\t"); 
-						Serial.println(fac, 2);
- 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??ï¿½ï¿½o?ï¿½ï¿½oy?Y   
+						//Serial.print(d1, DEC);
+						//Serial.print("\t"); 
+						//Serial.print(d2, DEC);
+						//Serial.print("\t"); 
+						//Serial.println(fac, 2);
+ 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??¡§o?¡§oy?Y   
 						delay(1000);
 						Tft.lcd_fill_rect(96, 240, 24, 16, WHITE);
 						tp_draw_touch_point(LCD_WIDTH - 20, LCD_HEIGHT - 20, WHITE);
@@ -210,12 +210,12 @@ void TP::tp_adjust(void)
 					fac=(float)d1/d2;
 					if(fac<0.95||fac>1.05) {
 						cnt=0;	
-						Serial.print(d1, DEC);
-						Serial.print("\t"); 
-						Serial.print(d2, DEC);
-						Serial.print("\t"); 
-						Serial.println(fac, 2);
- 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??ï¿½ï¿½o?ï¿½ï¿½oy?Y   
+						//Serial.print(d1, DEC);
+						//Serial.print("\t"); 
+						//Serial.print(d2, DEC);
+						//Serial.print("\t"); 
+						//Serial.println(fac, 2);
+ 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??¡§o?¡§oy?Y   
 						delay(1000);
 						Tft.lcd_fill_rect(96, 240, 24, 16, WHITE);
 						tp_draw_touch_point(LCD_WIDTH - 20, LCD_HEIGHT - 20, WHITE);
@@ -228,12 +228,6 @@ void TP::tp_adjust(void)
 
 					s_tTouch.fYfac = (float)(LCD_HEIGHT - 40) / (int16_t)(pos_temp[2][1] - pos_temp[0][1]);	  
 					s_tTouch.iYoff = (LCD_HEIGHT - s_tTouch.fYfac * (pos_temp[2][1] + pos_temp[0][1])) / 2;
-
-					Serial.println(s_tTouch.fXfac);
-					Serial.println(s_tTouch.iXoff);
-					Serial.println(s_tTouch.fYfac);
-					Serial.println(s_tTouch.iYoff);
-
 
 					
 					if(abs(s_tTouch.fXfac) > 2 || abs(s_tTouch.fYfac) > 2) {
@@ -268,62 +262,25 @@ void TP::tp_adjust_def(void)
 
 void TP::tp_dialog(void)
 {
-	Tft.lcd_clear_screen(BLACK);
-	Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, color);
-	Tft.lcd_fill_rect(0,0,15,15,RED);
-	Tft.lcd_fill_rect(15,0,15,15,BLUE);
-	Tft.lcd_fill_rect(31,0,15,15,GREEN);
-	Tft.lcd_fill_rect(47,0,15,15,YELLOW);
-	Tft.lcd_fill_rect(63,0,15,15,WHITE);
-	
+	Tft.lcd_clear_screen(WHITE);
+	Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, BLUE);
 }
-
-
 
 void TP::tp_draw_board(void)
 {
-
 	tp_scan(0);
 	if (s_tTouch.chStatus & TP_PRESS_DOWN) {
 		if (s_tTouch.hwXpos < LCD_WIDTH && s_tTouch.hwYpos < LCD_HEIGHT) {
-			if (s_tTouch.hwXpos > (LCD_WIDTH - 40) && s_tTouch.hwYpos < 16) 
-				{
+			if (s_tTouch.hwXpos > (LCD_WIDTH - 40) && s_tTouch.hwYpos < 16) {
 				tp_dialog();
-				} 
-			 
-			if (s_tTouch.hwXpos > 0 && s_tTouch.hwXpos < 15 && s_tTouch.hwYpos > 0 && s_tTouch.hwYpos < 15) 
-				{
-				color=RED;
-				Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, color);
-				} 
-			if (s_tTouch.hwXpos > 15 && s_tTouch.hwXpos < 30 && s_tTouch.hwYpos > 0 && s_tTouch.hwYpos < 15) 
-				{
-				color=BLUE;
-				Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, color);
-				} 
-			if (s_tTouch.hwXpos > 31 && s_tTouch.hwXpos < 46 && s_tTouch.hwYpos > 0 && s_tTouch.hwYpos < 15) 
-				{
-				color=GREEN;
-				Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, color);
-				} 
-			if (s_tTouch.hwXpos > 47 && s_tTouch.hwXpos < 62 && s_tTouch.hwYpos > 0 && s_tTouch.hwYpos < 15) 
-				{
-				color=YELLOW;
-				Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, color);
-				} 
-			if (s_tTouch.hwXpos > 63 && s_tTouch.hwXpos < 78 && s_tTouch.hwYpos > 0 && s_tTouch.hwYpos < 15) 
-				{
-				color=WHITE;
-				Tft.lcd_display_string(LCD_WIDTH - 40, 0, (const uint8_t *)"CLEAR", 16, color);
-				} 
-			else	
-				{	
-					tp_draw_big_point(s_tTouch.hwXpos, s_tTouch.hwYpos, color);
-					
-				}
+			} else {
+				tp_draw_big_point(s_tTouch.hwXpos, s_tTouch.hwYpos, RED);
+			}
 		}
 	}
 }
+
+
 
 int TP::tp_get_x() {
 	tp_scan(0);
